@@ -58,13 +58,19 @@ re-deciding what another settled.
 - **#816 closes** when #829–#832 merge (item 4 was #818). Then **#555** (promote `develop` to `main`).
 - **#648** re-scoped 2026-10-08: title now "false Moved card"; cause 2 fixed by #820; 18 wrap fragments remain,
   blocked on #734.
-- **Filed #836** (2026-10-09): an engrossed amendment's second amendment is dropped. `find_bill_body` reads only the first
-  amendment block; 114-hr-2029 v6's Division Q (PATH Act, 135 sections) is missing, so 467 of v6 -> v7's 470 `added` cards are false.
+- **#836 / #788 (same defect; #788 filed 2026-10-05 and missed when filing #836):** PR #837 (`claude/every-amendment-block`,
+  worktree `/home/user/dt-836`) closes both. Reads every amendment block; adds
+  `test_every_amendment_section_reaches_a_node`; the conservation and coverage gates select blocks directly.
+  The smoke test (PR comment, 2026-10-11, 449 govinfo eas/eah files) found nothing worse. It also fixes
+  117-hr-2471 v5 (6 -> 4,007 nodes) and 115-hr-244 v5 (10 -> 3,023). 115-hr-244 v5's manifest withholding is probably obsolete.
+- **Filed from the smoke test (2026-10-11):** #838 instruction-only amendment raises; #839 inserted text below
+  section level / preamble reaches no node; #840 (Feature) apply partial instructions; #841 same-day versions
+  misordered (`order_versions` tier + code tie-break). Commented on #366 (115-hr-244 v5 is NOT instruction-style).
 - **#816 closed** 2026-10-09 with an item-to-PR mapping comment; #555 is unblocked.
 
 ### Next, in order
 
-1. #555 (promote `develop` to `main`); #836 (dropped second amendment) is a candidate before it.
+1. Merge #837, then #555 (promote `develop` to `main`).
 2. **#811, #706, #698:** the rest of the separation and parity theme (epic #691). #731 (rocks737, open) is a PR
    for #706's summary parity; read it before starting #706.
 3. The full re-audit is due (its trigger, #807/#808/#810 landing, happened); ask the user. Still undecided:
