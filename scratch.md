@@ -70,7 +70,7 @@ re-deciding what another settled.
 
 ### Next, in order
 
-1. Merge #837, then #555 (promote `develop` to `main`).
+1. #555 (promote `develop` to `main`). #837 merged 2026-10-11 (develop `d44400e`), closing #836 and #788.
 2. **#811, #706, #698:** the rest of the separation and parity theme (epic #691). #731 (rocks737, open) is a PR
    for #706's summary parity; read it before starting #706.
 3. The full re-audit is due (its trigger, #807/#808/#810 landing, happened); ask the user. Still undecided:
