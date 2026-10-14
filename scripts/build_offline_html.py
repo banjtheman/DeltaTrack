@@ -119,16 +119,21 @@ def pyodide_tarball(local: Path | None) -> bytes:
             print(f"Downloading {PYODIDE_TGZ_URL}", file=sys.stderr)
             with urllib.request.urlopen(PYODIDE_TGZ_URL, timeout=120) as resp:
                 fetched = resp.read()
+            _check_hash(fetched)  # before caching, so a bad download is never kept
             cached.parent.mkdir(parents=True, exist_ok=True)
             cached.write_bytes(fetched)
         data = cached.read_bytes()
+    _check_hash(data)
+    return data
+
+
+def _check_hash(data: bytes) -> None:
     digest = hashlib.sha256(data).hexdigest()
     if digest != PYODIDE_TGZ_SHA256:
         raise SystemExit(
             f"Pyodide tarball hash mismatch: got {digest}, expected {PYODIDE_TGZ_SHA256}. "
             "Delete the cached copy and retry, or pass the right file with --pyodide-tgz."
         )
-    return data
 
 
 def read_pyodide_assets(tgz: bytes) -> dict[str, bytes]:

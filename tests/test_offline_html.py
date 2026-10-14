@@ -89,6 +89,14 @@ def test_a_pyodide_tarball_with_another_hash_is_refused(tmp_path):
         build.pyodide_tarball(_fake_tarball(tmp_path))
 
 
+def _bill(text: str) -> bytes:
+    """A minimal bill XML with one section, enough to run the comparison end to end."""
+    return (
+        '<?xml version="1.0"?><bill><legis-body><section id="s1"><enum>1.</enum>'
+        f"<header>Short title</header><text>{text}</text></section></legis-body></bill>"
+    ).encode()
+
+
 def test_the_engine_bundle_imports_the_xml_path_with_pdfium_stubbed(tmp_path):
     """The bundle the page unpacks must import the XML comparison with no real PDFium.
 
@@ -97,11 +105,10 @@ def test_the_engine_bundle_imports_the_xml_path_with_pdfium_stubbed(tmp_path):
     `parsers/pdf_text.py` wraps two PDFium bindings with ctypes at import (#794); a raw
     stub that is not a real ctypes function pointer sends that into endless recursion,
     which is how the page first failed to start. Also proves the renderer's stylesheets
-    travelled, by rendering a report from a committed pair.
+    travelled, by rendering a report from an inline two-section bill.
     """
     with zipfile.ZipFile(io.BytesIO(build.engine_zip(PACKAGE_DIR))) as zf:
         zf.extractall(tmp_path)
-    pair = FIXTURES_DIR / "118-hr-4366"
     script = (
         "import sys; from pathlib import Path\n"
         f"sys.path.insert(0, {str(tmp_path)!r})\n"
@@ -109,8 +116,7 @@ def test_the_engine_bundle_imports_the_xml_path_with_pdfium_stubbed(tmp_path):
         f"assert Path(pypdfium2.__file__).is_relative_to({str(tmp_path)!r}), pypdfium2.__file__\n"
         f"assert Path(deltatrack.__file__).is_relative_to({str(tmp_path)!r}), deltatrack.__file__\n"
         "from deltatrack.compare.xml import compare_xml_html\n"
-        f"html = compare_xml_html(Path({str(pair / '1_reported-in-house.xml')!r}).read_bytes(),"
-        f" Path({str(pair / '2_engrossed-in-house.xml')!r}).read_bytes())\n"
+        f"html = compare_xml_html({_bill('Original text.')!r}, {_bill('Amended text.')!r})\n"
         "assert '<style>' in html and '</html>' in html\n"
     )
     result = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, timeout=120)

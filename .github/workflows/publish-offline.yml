@@ -23,7 +23,9 @@ on:
 
 concurrency:
   group: publish-offline
-  cancel-in-progress: true
+  # Never cancel: a run stopped between deleting the old asset and uploading the new
+  # one would leave the release with no file.
+  cancel-in-progress: false
 
 jobs:
   publish-offline:

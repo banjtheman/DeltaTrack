@@ -225,6 +225,7 @@ def dt_compare(start_name, start_data, end_name, end_data):
         createPyodideModule,
         lockFileContents: lock,
       });
+      bundled.clear(); // Pyodide has copied both; don't hold ~12 MB for the page's lifetime
       pyodide.unpackArchive(engine, 'zip', { extractDir: '/offline' });
       pyodide.runPython(SETUP);
       compare = pyodide.globals.get('dt_compare');
